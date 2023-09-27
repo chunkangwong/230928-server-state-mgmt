@@ -1,26 +1,32 @@
-import { useEffect, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import "./App.css";
 import { createPost, getPosts } from "./controllers/posts.controller";
-import { Post } from "./models/Post.model";
+import { useState } from "react";
 
 function App() {
-  const [posts, setPosts] = useState<Post[]>([]);
-
   const [title, setTitle] = useState("");
 
-  useEffect(() => {
-    const init = async () => {
-      const newPosts = await getPosts();
-      setPosts(newPosts);
-    };
-    init();
-  }, []);
+  const {
+    data: posts,
+    refetch,
+    isFetching,
+    error,
+  } = useQuery({
+    queryKey: ["fetchPosts"],
+    queryFn: getPosts,
+  });
+
+  const { mutateAsync, isLoading: isCreatingPost } = useMutation({
+    mutationFn: createPost,
+    onSuccess: () => {
+      refetch();
+    },
+  });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const newPost = await createPost(title);
     setTitle("");
-    setPosts([newPost, ...posts]);
+    await mutateAsync(title);
   };
 
   return (
@@ -30,15 +36,20 @@ function App() {
           name="title"
           type="text"
           placeholder="Add new post"
-          value={title}
           autoFocus
-          onChange={(e) => setTitle(e.target.value)}
           required
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          disabled={isCreatingPost}
         />
-        <button type="submit">Add</button>
+        <button type="submit" disabled={isCreatingPost}>
+          {isCreatingPost ? "Creating..." : "Create"}
+        </button>
       </form>
+      {isFetching ? <p>Loading...</p> : null}
+      {error ? <p>{(error as Error).message}</p> : null}
       <ul>
-        {posts.map((post) => {
+        {posts?.map((post) => {
           return <li key={post.id}>{post.title}</li>;
         })}
       </ul>
