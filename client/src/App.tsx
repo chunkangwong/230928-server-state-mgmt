@@ -8,9 +8,9 @@ function App() {
 
   const {
     data: posts,
-    refetch,
     isFetching,
     error,
+    refetch,
   } = useQuery({
     queryKey: ["fetchPosts"],
     queryFn: async () => {
