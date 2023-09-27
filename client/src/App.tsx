@@ -13,11 +13,17 @@ function App() {
     error,
   } = useQuery({
     queryKey: ["fetchPosts"],
-    queryFn: getPosts,
+    queryFn: async () => {
+      const posts = await getPosts();
+      return posts;
+    },
   });
 
   const { mutateAsync, isLoading: isCreatingPost } = useMutation({
-    mutationFn: createPost,
+    mutationFn: async (title: string) => {
+      const newPost = await createPost(title);
+      return newPost;
+    },
     onSuccess: () => {
       refetch();
     },
