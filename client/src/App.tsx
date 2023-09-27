@@ -31,8 +31,8 @@ function App() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setTitle("");
     await mutateAsync(title);
+    setTitle("");
   };
 
   return (
