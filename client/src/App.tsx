@@ -9,7 +9,7 @@ function App() {
   const {
     data: posts,
     isFetching,
-    error,
+    error: fetchPostsError,
     refetch,
   } = useQuery({
     queryKey: ["fetchPosts"],
@@ -19,7 +19,11 @@ function App() {
     },
   });
 
-  const { mutateAsync, isLoading: isCreatingPost } = useMutation({
+  const {
+    mutateAsync,
+    isLoading: isCreatingPost,
+    error: createPostError,
+  } = useMutation({
     mutationFn: async (title: string) => {
       const newPost = await createPost(title);
       return newPost;
@@ -51,9 +55,10 @@ function App() {
         <button type="submit" disabled={isCreatingPost}>
           {isCreatingPost ? "Creating..." : "Create"}
         </button>
+        {createPostError ? <p>{(createPostError as Error).message}</p> : null}
       </form>
       {isFetching ? <p>Loading...</p> : null}
-      {error ? <p>{(error as Error).message}</p> : null}
+      {fetchPostsError ? <p>{(fetchPostsError as Error).message}</p> : null}
       <ul>
         {posts?.map((post) => {
           return <li key={post.id}>{post.title}</li>;
