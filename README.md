@@ -4,18 +4,20 @@ This is a project used to demonstrate the two approaches of server state managem
 
 ## Getting Started
 
-1. Start the server
+1. The server requires `bun` runtime. Check out the [bun](https://bun.sh/) website for installation instructions.
 
-```bash
-cd server
-npm install
-npm start
-```
+2. Start the server
 
-2. Start the client
+   ```bash
+   cd server
+   npm install
+   npm start
+   ```
 
-```bash
-cd client
-npm install
-npm run dev
-```
+3. Start the client
+
+   ```bash
+   cd client
+   npm install
+   npm run dev
+   ```
